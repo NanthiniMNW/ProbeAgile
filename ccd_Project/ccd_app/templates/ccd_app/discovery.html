@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CCD Application</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'ccd_app/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar"> 
+        {% if request.user.role == 'Supervisor' %}  
+        <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+        <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+        <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+        <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning </a>
+    {% elif request.user.role == 'Executive' %} 
+        {% for scope in request.user.get_allocated_scopes %}
+            {% if scope == 'Discovery' %}
+                <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+            {% elif scope == 'DomainReview' %}
+                <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+            {% elif scope == 'Download' %}
+                <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+            {% elif scope == 'Cleaning' %}
+                <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning</a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+
+
+        
+        {% if request.user.role == 'Supervisor' %}
+            <a href="{% url 'reports' %}" data-section="reports" onclick="switchSection(this)"><i class="fa fa-bar-chart"></i> Reports </a> 
+            <a href="{% url 'usercreation' %}" data-section="usercreation" onclick="switchSection(this)"><i class="fa fa-user-circle"></i> User Creation </a>  
+        {% endif %}
+        <a href="{% url 'logout' %}" class="logout-link" data-section="logout" onclick="switchSection(this)">
+            <i class="fa fa-sign-out"></i> Logout
+        </a>
+    </div>
+
+    
+<div id="discovery" class="container content-section active-section">
+    <form id="form" method="POST" action="/ccd/submit-discovery/">
+        {% csrf_token %}
+        <div class="form-group">
+            <h3><i class="fa fa-keysearch"></i> Key</h3>
+            <input type="text" id="searchInput" placeholder="Enter a keyword to search" />
+            <div>
+                <button type="button" onclick="searchKeyword()"><i class="fa fa-search"></i> Search</button>
+            </div>
+            <div id="keywordMessage" class="message"></div>
+        </div>
+        
+        <div id="matchedKeywordDetails" style="display: none; margin-top: 20px;">
+            <div id="keywordDetailsTable"></div>
+            <!-- Pagination controls will be added dynamically here -->
+        </div>
+
+        <div class="form-group required">
+            <label for="urlInput">Enter the URL</label>
+            <div>
+                <input type="text" id="urlInput" name="url" placeholder="Enter a URL" required onblur="checkUrlExistence()" />
+                <div id="urlMessage" class="message"></div>
+            </div>
+        </div>
+
+        <div class="form-group required">
+            <label for="title">Title</label>
+            <div>
+                <input type="text" id="title" name="title" placeholder="Enter a Title" required />
+                <div id="titleMessage" class="message"></div>
+            </div>
+        </div>
+
+        <div class="form-group required">
+            <label for="Keyword">Keyword</label>
+            <div>
+                <input type="text" id="Keyword" name="keyword" placeholder="Enter a Keyword" required />
+                <div id="keywordMessage" class="message"></div>
+            </div>
+        </div>
+
+        <div class="form-group required">
+            <label for="CourseName">Course Name</label>
+            <div>
+                <input type="text" id="CourseName" name="course" placeholder="Enter the Course Name" required />
+                <div id="courseMessage" class="message"></div>
+            </div>
+        </div>
+
+        <div class="form-group required">
+            <label for="contentType">Content Type</label>
+            <div>
+                <select id="contentType" name="content_type" required onchange="handleContentTypeChange()">
+                    <option value="" disabled selected>Select a content type</option>
+                    <option value="video">Video</option>
+                    <option value="audio">Audio</option>
+                    <option value="pdf">PDF</option>
+                    <option value="PPT">PPT</option>
+                    <option value="webpage">Webpage</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="approxLinkCount" style="display: none;" class="form-group required">
+            <label for="linkCountInput">Approximate Link Count</label>
+            <div>
+                <input type="number" id="linkCountInput" name="link_count" placeholder="Enter Approximate Link Count" required />
+            </div>
+        </div>
+
+        <div class="form-group required">
+            <label for="Copyrights">Copy Rights</label>
+            <div>
+                <select id="Copyrights" name="copyright_status" required>
+                    <option value="" disabled selected>Select a copyright status</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group required">
+            <label for="linkstatus">Link Status</label>
+            <div>
+                <select id="linkstatus" name="link_status" required>
+                    <option value="" disabled selected>Select a link status</option>
+                    <option value="open">Open</option>
+                    <option value="Notopen">Not Open</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" id="submit-button" onclick="return handleFormSubmission(event)"><i class="fa fa-paper-plane"></i> Submit</button>
+    </form>
+</div>
+    
+    <script src="{% static 'ccd_app/discovery.js' %}"></script>
+</body>
+</html>

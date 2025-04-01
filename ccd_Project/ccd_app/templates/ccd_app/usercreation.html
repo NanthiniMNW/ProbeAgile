@@ -1,0 +1,155 @@
+<!-- templates/ccd_app/usercreation.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Creation</title>
+    <link rel="stylesheet" href="{% static 'ccd_app/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        {% if request.user.role == 'Supervisor' %}
+            <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+            <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+            <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+            <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning</a>
+            <a href="{% url 'reports' %}" data-section="reports" onclick="switchSection(this)"><i class="fas fa-chart-bar"></i> Reports </a> 
+            <a href="{% url 'usercreation' %}" data-section="usercreation" onclick="switchSection(this)"><i class="fa fa-user-circle"></i> User Creation</a>
+        {% elif request.user.role == 'Executive' %}
+            {% for scope in request.user.get_allocated_scopes %}
+                {% if scope == 'Discovery' %}
+                    <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+                {% elif scope == 'DomainReview' %}
+                    <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+                {% elif scope == 'Download' %}
+                    <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+                {% elif scope == 'Cleaning' %}
+                    <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning</a>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <a href="{% url 'logout' %}" class="logout-link" data-section="logout" onclick="switchSection(this)">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <div id="id01" class="modal">
+        <!-- Work Allocation Form -->
+        <form id="work_allocation" action="{% url 'workallocation' %}" method="post" class="modal-content animate">
+            {% csrf_token %}
+            <div class="container">
+                <h2>Work Allocation</h2>
+                <div class="form-group required">
+                    <label for="employeeid_alloc" class="label-style"><i class="fas fa-user"></i> Employee Id</label>
+                    <div>
+                        <select id="employeeid_alloc" name="employee_id" required style="width:500px;">
+                            <option value="" disabled selected>Select an Employee Id</option>
+                            {% for employee in employees %}
+                                <option value="{{ employee.employee_id }}" data-username="{{ employee.username }}">
+                                    {{ employee.employee_id }}
+                                </option>
+                            {% empty %}
+                                <option value="" disabled>No employees found</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <p id="selected_employee_name" style="margin-top: 10px;"></p>
+                </div>
+                <div class="form-group">
+                    <label class="group-label">Scope</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-inline" for="discovery">
+                            <input type="checkbox" id="discovery" name="scope" value="Discovery"> Discovery
+                        </label>
+                        <label class="checkbox-inline" for="domainreview">
+                            <input type="checkbox" id="domainreview" name="scope" value="DomainReview"> DomainReview
+                        </label>
+                        <label class="checkbox-inline" for="download">
+                            <input type="checkbox" id="download" name="scope" value="Download"> Download
+                        </label>
+                        <label class="checkbox-inline" for="cleaning">
+                            <input type="checkbox" id="cleaning" name="scope" value="Cleaning"> Cleaning
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" id="assignbtn">Assign</button>
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
+            
+        </form>
+
+        <!-- Work Allocation Details -->
+        <button id="showWorkDetailsBtn">Work Assigned Details</button>
+        <div id="workAllocationList" class="container" style="display: none;">
+            <h2>Work Allocation Details</h2>
+            <table id="workTable" border="1">
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Username</th>
+                        <th>Scope</th>
+                        <th>Allocated At</th>
+                    </tr>
+                </thead>
+                <tbody id="workTableBody"></tbody>
+            </table>
+            <button id="hideWorkDetailsBtn">Hide Details</button>
+        </div>
+    </div>
+        <!-- User Creation Form -->
+        <form id="usercreation" action="{% url 'usercreation' %}" method="post" class="modal-content animate">
+            {% csrf_token %}
+            <div class="container">
+                <h2>Create a User</h2>
+                <div class="form-group">
+                    <label for="employeeid">Employee Id</label>
+                    <input type="text" id="employeeid" name="employee_id" required style="width: 500px;">
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required style="width: 500px;">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required style="width: 500px;">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <div class="radio-group">
+                        <label class="radio-inline">
+                            <input type="radio" id="supervisor" name="role" value="Supervisor" required> Supervisor
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" id="executive" name="role" value="Executive"> Executive
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" id="submitBtn">Submit</button>
+        </form>
+
+        <!-- User List -->
+        <button id="showUsersBtn">Show Users</button>
+        <div id="userList" class="container" style="display: none;">
+            <h2>All Registered Users</h2>
+            <table id="userTable" border="1">
+                <thead>
+                    <tr>
+                        <th>Employee Id</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+            </table>
+            <button id="hideUsersBtn">Hide Users</button>
+        </div>
+    </div>
+</div>
+    <script src="{% static 'ccd_app/usercreation.js' %}"></script>
+</body>
+</html>

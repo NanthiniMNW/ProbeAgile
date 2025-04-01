@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CCD Application</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'ccd_app/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="navbar"> 
+        {% if request.user.role == 'Supervisor' %}  
+        <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+        <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+        <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+        <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning </a>
+    {% elif request.user.role == 'Executive' %} 
+        {% for scope in request.user.get_allocated_scopes %}
+            {% if scope == 'Discovery' %}
+                <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+            {% elif scope == 'DomainReview' %}
+                <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+            {% elif scope == 'Download' %}
+                <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+            {% elif scope == 'Cleaning' %}
+                <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning</a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+
+
+        
+        {% if request.user.role == 'Supervisor' %}
+            <a href="{% url 'reports' %}" data-section="reports" onclick="switchSection(this)"><i class="fa fa-bar-chart"></i> Reports </a> 
+            <a href="{% url 'usercreation' %}" data-section="usercreation" onclick="switchSection(this)"><i class="fa fa-user-circle"></i> User Creation </a>  
+        {% endif %}
+        <a href="{% url 'logout' %}" class="logout-link" data-section="logout" onclick="switchSection(this)">
+            <i class="fa fa-sign-out"></i> Logout
+        </a>
+    </div>
+
+    
+<div id="domainreview" class="container content-section" style="display: block;">
+    <form id="domainReviewForm" action="/ccd/submit_domainreview/" method="POST" onsubmit="return handleDomainReviewSubmission(event)">
+        <div class="form-group required">
+            <label for="domainUrlInput" class="label-style"><i class="fa fa-removeurl"></i> Review URL</label>
+            <div>
+                <input type="text" id="domainUrlInput" name="domainUrl" placeholder="Domain URL" required />
+            </div>
+            <div>
+                
+                <div id="domainURLMessage" class="message"></div>
+            </div>
+            <div id="matchedurlDetails" style="display: none;">
+                <div id="matchedurlTable"></div>
+            </div>
+            <button type="button" id="fetchDetailsButton" onclick="searchurlKeyword()">Fetch Details</button>
+        </div>
+        <div class="form-group required">
+            <label for="linkStatusReview" class="label-style"><i class="fa fa-linkstatus"></i> Link Status</label>
+            <div>
+                <select id="linkStatusReview" name="linkStatusReview" required onchange="handleStatusChange()">
+                    <option value="" disabled selected>Select a link status</option>
+                    <option value="open">Open</option>
+                    <option value="notopen">Not Open</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group required">
+            <label for="contentReview" class="label-style"><i class="fa fa-content"></i> Content</label>
+            <div>
+                <select id="contentReview" name="content" required onchange="handleContentChange()">
+                    <option value="" disabled selected>Select content status</option>
+                    <option value="valid">Valid</option>
+                    <option value="invalid">Invalid</option>
+                </select>
+            </div>
+        </div>
+        <div id="invalidReason" style="display: none;" class="form-group">
+            <label for="reasonForInvalidStatus" class="label-style">Reason for Invalid Status</label>
+            <div>
+                <input type="text" id="reasonForInvalidStatus" name="reasonforinvalidstatus" placeholder="Enter the Reason for Invalid" style="display: none;">
+            </div>
+        </div>
+        <div class="form-group required">
+            <label for="contentTypeReview" class="label-style"><i class="fa fa-content"></i> Content-Type</label>
+            <div>
+                <select id="contentTypeReview" name="contentType" required>
+                    <option value="" disabled selected>Select a content type</option>
+                    <option value="video">Video</option>
+                    <option value="audio">Audio</option>
+                    <option value="pdf">PDF</option>
+                    <option value="ppt">PPT</option>
+                    <option value="webpage">Webpage</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+        </div>
+        <div class="button-container">
+            <button type="submit"><i class="fa fa-paper-plane"></i> Submit</button>
+            <button type="button" onclick="handleNextButtonClick()" id="nextButton"><i class="fa fa-arrow-right"></i> Next</button>
+        </div>
+    </form>
+</div>
+    
+    <script src="{% static 'ccd_app/domainReview.js' %}"></script>
+</body>
+</html>

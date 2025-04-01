@@ -1,0 +1,77 @@
+/* Consistent Body Styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Match font with first navbar */
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Styling */
+.navbar {
+    width: 100%;
+    background-color: #444141; /* Match the first navbar's background color */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    padding: 15px 0; /* Match the padding of the first navbar */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add subtle shadow like first navbar */
+}
+
+/* Navbar Link Styling */
+.navbar a {
+    color: #f8f8f8f6; /* Match the text color of the first navbar */
+    text-decoration: none;
+    font-size: 14px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: color 0.3s, transform 0.2s;
+    border-radius: 4px;
+    margin: 0 10px;
+}
+
+/* Active Link Styling */
+.navbar a.active {
+    color: #1abc9c; /* Match the active link color with first navbar */
+    font-weight: bold;
+    border-bottom: 2px solid #1abc9c; /* Add underline effect like first navbar */
+}
+
+/* Hover Effect */
+.navbar a:hover {
+    color: #1abc9c; /* Vibrant green on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+}
+
+/* Responsive Design for Navbar */
+@media (max-width: 600px) {
+    .navbar {
+        background-color: #333; /* Slightly darker for mobile */
+        padding: 6px 0; /* Adjust padding for smaller screens */
+    }
+
+    .navbar a {
+        float: none;
+        display: block;
+        text-align: center;
+        padding: 10px;
+        font-size: 16px;
+        color: white;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .navbar a:active {
+        background-color: #222; /* Darker active background */
+    }
+}
+
+/* Additional Navbar Styling */
+.navbar a {
+    font-size: 14px; /* Keep consistent font size */
+}
+
+        .bold-heading {
+            font-weight: bold;
+        }

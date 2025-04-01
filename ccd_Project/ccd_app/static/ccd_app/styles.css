@@ -1,0 +1,385 @@
+/* General Body Styles */
+body {
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #e6ecf0 0%, #d1dbe3 100%);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: #2a2a3d;
+    line-height: 1.6;
+}
+
+/* Navbar Styles */
+.navbar {
+    width: 100%;
+    background: linear-gradient(to bottom, #2a2a3d 0%, #1f1f2e 100%); /* Dark slate gradient */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0; /* Slimmer padding */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border */
+}
+
+.navbar a {
+    color: #d1d5db; /* Light gray for a softer look */
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 6px; /* Softer, rectangular shape */
+    margin: 0 10px;
+    position: relative; /* For pseudo-element */
+    overflow: hidden; /* Contain hover effect */
+}
+
+.navbar a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #006d77; /* Teal underline */
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+}
+
+.navbar a:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.navbar a:hover {
+    color: #fff; /* Bright white on hover */
+    background: rgba(0, 109, 119, 0.15); /* Subtle teal overlay */
+}
+
+.navbar a.active {
+    color: #fff;
+    background: rgba(0, 109, 119, 0.3); /* Slightly stronger teal */
+    font-weight: 600;
+}
+
+/* Container Styles (Adjusted for new navbar height) */
+.container {
+    width: 100%;
+    height: calc(100vh - 60px); /* Adjusted for slimmer navbar */
+    padding: 35px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    margin-top: 60px;
+    overflow-y: auto;
+}
+
+/* Headings */
+h3 {
+    margin: 20px 0 10px;
+    color: #2a2a3d;
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 0.8px;
+    border-bottom: 2px solid #006d77;
+    display: inline-block;
+    padding-bottom: 4px;
+}
+
+/* Form Wrapper Styles */
+.form-wrapper {
+    width: 100%;
+    max-width: 680px;
+    margin: 25px auto;
+    padding: 25px;
+    background: linear-gradient(145deg, #f9fafb, #eceff1);
+    border-radius: 15px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+/* Inputs and Selects */
+input, select {
+    width: 50%;
+    padding: 12px 14px;
+    font-size: 14px;
+    margin: 8px 0;
+    border: 1px solid #b0b8c4;
+    border-radius: 8px;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: #006d77;
+    box-shadow: 0 0 10px rgba(0, 109, 119, 0.3);
+    outline: none;
+}
+
+/* Buttons */
+button {
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 500;
+    background: linear-gradient(135deg, #5c637a, #3b3f5c);
+    color: #e2e8f0;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+button:hover {
+    background: linear-gradient(135deg, #006d77, #00565f);
+    color: #e2e8f0;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 109, 119, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Content Sections */
+.content-section {
+    display: none;
+    animation: slideIn 0.5s ease-out;
+}
+
+.active-section {
+    display: block;
+}
+
+/* Message Styles */
+.message {
+    font-size: 13px;
+    color: #ff4757;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    h3 {
+        font-size: 16px;
+    }
+    input, select {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    button {
+        padding: 8px 18px;
+        font-size: 13px;
+    }
+    .navbar a {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    .form-wrapper {
+        padding: 20px;
+    }
+}
+
+/* Specific Elements */
+#invalidReason, #videoDuration {
+    display: none;
+}
+
+input[name="reasonforinvalidstatus"] {
+    display: block;
+    margin-top: 8px;
+}
+
+/* Form Group Labels */
+.form-group label {
+    color: #2a2a3d;
+    font-size: 14px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.required label::after {
+    content: " *";
+    color: #ff4757;
+    font-weight: 600;
+}
+
+/* Radio and Checkbox Groups */
+.radio-group, .checkbox-group {
+    margin: 12px 0;
+}
+
+.radio-group .radio-inline, .checkbox-group .checkbox-inline {
+    display: inline-block;
+    margin-right: 25px;
+    cursor: pointer;
+    font-weight: 400;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    margin-right: 6px;
+    vertical-align: middle;
+    accent-color: #006d77;
+}
+
+/* Tables and Containers */
+#matchedKeywordDetails, #matchedurlTable, #matchedurlTableContainer, #linkcleaningmatchedurlTableContainer, #cleaningmatchedurlTableContainer,#reportTableContainer {
+    width: 65%;
+    margin: 15px 0;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+#matchedurlTable th, #matchedurlTable td {
+    padding: 10px;
+    border: 1px solid #d1dbe3;
+}
+
+/* Pagination Controls */
+#paginationControls button {
+    padding: 6px 12px;
+    margin: 0 5px;
+    background: #e2e8f0;
+    color: #2a2a3d;
+    border: none;
+    border-radius: 20px;    
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#paginationControls button:hover {
+    background: #006d77;
+    color: #e2e8f0;
+}
+
+#paginationControls button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Messages */
+.messages .success {
+    color: #2ecc71;
+    font-weight: 500;
+}
+
+.messages .error {
+    color: #ff4757;
+}
+
+/* Button Container */
+.button-container {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start;
+    margin-top: 15px;
+}
+
+.button-container button {
+    padding: 10px 22px;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+.checkbox-group {
+    /*flex-wrap: wrap;*/
+    gap: 15px;
+    justify-content: space-between; /* Evenly distribute */
+}
+.checkbox-group .checkbox-inline {
+    flex: 0 0 45%; /* Roughly two per line */
+}
+.checkbox-group {
+    gap: 10px;
+}
+#userTable {
+    width: 20%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+#userTable th, #userTable td {
+    padding: 8px;
+    text-align: left;
+}
+#userTable th {
+    background-color: #f2f2f2;
+}
+
+/*Button*/
+.container {
+    padding: 20px;
+}
+#userTable {
+    width: 30%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+#userTable th, #userTable td {
+    padding: 8px;
+    text-align: left;
+}
+#userTable th {
+    background-color: #f2f2f2;
+}
+#showUsersBtn, #hideUsersBtn {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+#showUsersBtn:hover, #hideUsersBtn:hover {
+    background-color: #45a049;
+}
+
+
+
+
+
+.container {
+    padding: 20px;
+}
+#workTable {
+    width: 50%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+#workTable th, #workTable td {
+    padding: 8px;
+    text-align: left;
+}
+#workTable th {
+    background-color: #f2f2f2;
+}
+#showWorkDetailsBtn, #hideWorkDetailsBtn {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+#showWorkDetailsBtn:hover, #hideWorkDetailsBtn:hover {
+    background-color: #45a049;
+}
+
+
+
+

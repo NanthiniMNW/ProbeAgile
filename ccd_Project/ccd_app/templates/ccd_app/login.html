@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCD Login</title>
+    <link rel="stylesheet" href="{% static 'ccd_app/loginstyle.css' %}">
+</head>
+<body>
+
+<h1>CCD Login</h1>
+
+<div id="id01" class="modal">
+    <!-- Modal Content for Login -->
+    <form id="loginForm" class="modal-content animate" action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div class="container">
+            <label for="username"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="username" pattern="^[a-zA-Z0-9]+$" title="Username must be alphanumeric" required>
+
+            <label for="password"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" required>
+        </div>
+
+        <div class="container">
+            <button type="submit" name="login">Login</button>
+        </div>
+        {% if messages %}
+        <div class="messages">
+                <p style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+                    {{ message }}
+                </p>
+        </div>
+    {% endif %}
+  
+    <!-- Fallback for explicit error context -->
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    </form>
+</div>
+
+
+
+</body>
+</html>

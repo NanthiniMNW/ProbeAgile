@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CCD Application</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'ccd_app/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar"> 
+        {% if request.user.role == 'Supervisor' %}  
+        <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+        <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+        <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+        <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning </a>
+    {% elif request.user.role == 'Executive' %} 
+        {% for scope in request.user.get_allocated_scopes %}
+            {% if scope == 'Discovery' %}
+                <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+            {% elif scope == 'DomainReview' %}
+                <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+            {% elif scope == 'Download' %}
+                <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+            {% elif scope == 'Cleaning' %}
+                <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning</a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+
+
+        
+        {% if request.user.role == 'Supervisor' %}
+            <a href="{% url 'reports' %}" data-section="reports" onclick="switchSection(this)"><i class="fa fa-bar-chart"></i> Reports </a> 
+            <a href="{% url 'usercreation' %}" data-section="usercreation" onclick="switchSection(this)"><i class="fa fa-user-circle"></i> User Creation </a>  
+        {% endif %}
+        <a href="{% url 'logout' %}" class="logout-link" data-section="logout" onclick="switchSection(this)">
+            <i class="fa fa-sign-out"></i> Logout
+        </a>
+    </div>
+
+
+    <div id="cleaning" class="container content-section" style="display: block;">
+        <form id="cleaning-form" action="/ccd/submit_cleaning/" method="POST" onsubmit="return handleCleaningSubmission(event)">
+            {% csrf_token %}
+            <div class="form-group required">
+                <label for="CleaningStatus" class="label-style"><i class="fa fa-clean"></i> Cleaning Status</label>
+                <div>
+                    <select id="CleaningStatus" name="CleaningStatus" required onchange="toggleCleaningFields()">
+                        <option value="">Select a Cleaning Status</option>
+                        <option value="Webpage">Webpage Content</option>
+                        <option value="DownloadedLinkContent">Downloaded Link Content</option>
+                    </select>
+                </div>
+            </div>
+
+        
+            <div id="URL-field" class="form-group required" style="display: none;">
+                <label for="cleaningurl" class="label-style"><i class="fa fa-info-cleaningurl"></i> Webpage Content URL</label>
+                <div>
+                    <input type="text" id="cleaningurl" name="cleaningurl" placeholder="Cleaning URL">
+                    <div>
+                        <button type="button" id="downloadfetchDetailsButton" onclick="cleaningsearchurlKeyword()">Fetch Details</button>
+                    </div>
+                    <div id="cleaningURLMessage"></div>
+                    <div id="cleaningmatchedurlDetails" style="display: none;">
+                        <div id="cleaningmatchedurlTableContainer"></div>
+                    </div>
+                </div>
+            </div>
+
+        
+            <div id="LinkURL-field" class="form-group required" style="display: none;">
+                <label for="linkcleaningurl" class="label-style"><i class="fa fa-info-linkcleaningurl"></i> Link Content URL</label>
+                <div>
+                    <input type="text" id="linkcleaningurl" name="linkcleaningurl" placeholder="Cleaning URL">
+                    <div>
+                        <button type="button" id="linkcleaningfetchDetailsButton" onclick="linkcleaningsearchurlKeyword()">Fetch Details</button>
+                    </div>
+                    <div id="linkcleaningURLMessage"></div>
+                    <div id="linkcleaningmatchedurlDetails" style="display: none;">
+                        <div id="linkcleaningmatchedurlTableContainer"></div>
+                    </div>
+                </div>
+            </div>
+
+        
+            <div id="ErrorField" class="form-group required" style="display: none;">
+                <label for="errorfield" class="label-style"><i class="fa fa-Errorfield"></i> Error</label>
+                <div>
+                    <select id="errorfield" name="error" required>
+                        <option value="">Select Error</option>
+                        <option value="error">Error</option>
+                        <option value="notanError">Not an Error</option>
+                    </select>
+                </div>
+            </div>
+
+        
+            <div id="reason-field" class="form-group required" style="display: none;">
+                <label for="reason" class="label-style"><i class="fa fa-reason"></i> Reason</label>
+                <div>
+                    <input type="text" id="reasoninput" name="reason" placeholder="Enter the Reason">
+                </div>
+            </div>
+        
+            <div id="description-field" class="form-group required" style="display: none;">
+                <label for="descriptionInput" class="label-style"><i class="fa fa-information"></i> Description</label>
+                <div>
+                    <input type="text" id="descriptionInput" name="description" placeholder="Enter Description" required>
+                </div>
+
+            </div>
+        
+            <div id="path-link-field" class="form-group required" style="display: none;">
+                <label for="pathLink" class="label-style"><i class="fa fa-pathlink"></i> Path Link</label>
+                <div>
+                    <input type="text" id="pathLink" name="path_link" placeholder="Enter Path Link">
+                </div>
+            </div>
+            <!---->
+            <div class="form-group required" id="contentType">
+                <label for="contentTypeReview" class="label-style"><i class="fa fa-content"></i> Content-Type</label>
+                <div>
+                    <select id="contentTypeReview" name="contentType" required>
+                        <option value="" >Select a content type</option>
+                        <option value="video">Video</option>
+                        <option value="audio">Audio</option>
+                        <option value="pdf">PDF</option>
+                        <option value="ppt">PPT</option>
+                        <option value="webpage">Webpage</option>
+                    </select>
+                </div>
+            </div>
+        
+            <div id="video-duration-field" style="display: none;">
+                <label for="videoduration" class="label-style"><i class="fa fa-clock"></i> Video Time Duration</label>
+                <div>
+                    <input id="videoDuration" name="videoDuration" placeholder="Video Duration">
+                </div>
+
+            </div>
+        
+            <div id="advertisement-level-field" class="form-group required" style="display: none;">
+                <label for="advertisementLevel" class="label-style"><i class="fa fa-advertisementLevel"></i> Advertisement Level</label>
+                <div>
+                    <select id="advertisementLevel" name="advertisement_level" required>
+                        <option value="">Select Advertisement Level</option>
+                        <option value="No">No</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+            </div>
+        
+            <div id="CopyrighstsField" class="form-group required" style="display: none;">
+                <label for="copyrights" class="label-style"><i class="fa fa-copyrights"></i> Copyright Status</label>
+                <div>
+                    <select id="copyrights" name="copyright_status" required>
+                        <option value="">Select Copyright Status</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+            </div>
+        
+            <div id="CrawlmethodField" class="form-group required" style="display: none;">
+                <label for="Crawlmethod" class="label-style"><i class="fa fa-Crawlmethod"></i> Crawl Method</label>
+                <div>
+                    <select id="Crawlmethod" name="crawl_method" required>
+                        <option value="">Select Crawl Method</option>
+                        <option value="manual">Manual</option>
+                        <option value="auto">Auto</option>
+                    </select>
+                </div>
+
+            </div>
+        
+            <div class="button-container">
+                <button type="submit">
+                    <i class="fa fa-paper-plane"></i> Submit
+                </button>
+                <button type="button" id="nextButton" style="display: none;" onclick="handleNextButtonWebpageClick()">
+                    <i class="fa fa-arrow-right"></i> Next
+                </button>
+                <button type="button" id="nextButtonURL" style="display: none;" onclick="handleNextButtonDownloadClick()">
+                    <i class="fa fa-arrow-right"></i> Next URL
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <script src="{% static 'ccd_app/cleaning.js' %}"></script>
+</body>
+</html>

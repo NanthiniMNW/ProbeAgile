@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'ccd_app/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'ccd_app/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Reports</title>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar"> 
+        {% if request.user.role == 'Supervisor' %}  
+        <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+        <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+        <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+        <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning </a>
+    {% elif request.user.role == 'Executive' %} 
+        {% for scope in request.user.get_allocated_scopes %}
+            {% if scope == 'Discovery' %}
+                <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+            {% elif scope == 'DomainReview' %}
+                <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+            {% elif scope == 'Download' %}
+                <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+            {% elif scope == 'Cleaning' %}
+                <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning</a>
+            {% endif %}
+        {% endfor %}
+    {% endif %} 
+        {% if request.user.role == 'Supervisor' %}
+            <a href="{% url 'reports' %}" data-section="reports" onclick="switchSection(this)"><i class="fas fa-chart-bar"></i> Reports </a> 
+            <a href="{% url 'usercreation' %}" data-section="usercreation" onclick="switchSection(this)"><i class="fa fa-user-circle"></i> User Creation </a>  
+        {% endif %}
+        <a href="{% url 'logout' %}" class="logout-link" data-section="logout" onclick="switchSection(this)">
+            <i  class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+
+    <!-- Report Form -->
+    <div id="report" class="container content-section" style="display: block;">
+        <h2>Generate Report</h2>
+        <form id="reportForm">
+            {% csrf_token %}
+            <div class="form-group required">
+                <label for="reports">Reports</label>
+                <select id="reports" name="reports" onchange="toggleDownloadFields()" required>
+                    <option value="" disabled selected>Select a report type</option>
+                    <option value="overall_report">Overall Report</option>
+                    <option value="userwise_report">Userwise Report</option>
+                </select>
+            </div>
+
+            <div class="form-group required" id="scopeSection" style="display: none;">
+                <label for="table">Scope</label>
+                <select id="table" name="scope">
+                    <option value="" disabled selected>Select a Scope</option>
+                    <option value="discovery">Discovery</option>
+                    <option value="domainreview">Domain Review</option>
+                    <option value="download">Download</option>
+                    <option value="cleaning">Cleaning</option>
+                </select>
+            </div>
+
+            <div class="form-group checkbox-group" id="contentTypeCheckboxSection" style="display: none;">
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="showContentType" onchange="toggleContentType()"> 
+                </label>
+            </div>
+
+            <div class="form-group" id="contentTypeSection" style="display: none;">
+                <label for="table">Content Type</label>
+                <select id="contentType" name="contentType">
+                    <option value="" disabled selected>Select a content type</option>
+                    <option value="video">Video</option>
+                    <option value="audio">Audio</option>
+                    <option value="pdf">PDF</option>
+                    <option value="PPT">PPT</option>
+                    <option value="webpage">Webpage</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+
+            <div class="form-group required" id="employeeSection" style="display: none;">
+                <label for="employee_id">Employee ID</label>
+                <select name="employee_id" id="employee_id">
+                    <option value="" disabled selected>Select an Employee Id</option>
+                    {% for employee in employees %}
+                        <option value="{{ employee.employee_id }}">{{ employee.username }} (ID: {{ employee.employee_id }})</option>
+                    {% endfor %}
+                    <option value="all">All</option>
+                </select>
+            </div>
+
+            <div class="form-group required" id="dateSection" style="display:none;">
+                <label for="from_date">From Date</label>
+                <input type="date" id="from_date" name="from_date" style="width:100px;" required>
+            </div>
+            <div class="form-group required" id="toDateSection" style="display:none;">
+                <label for="to_date">To Date</label>
+                <input type="date" id="to_date" name="to_date" style="width:100px;" required>
+            </div>
+            
+        <div class="button-container">
+            <button type="button" id="generateBtn" style="display: none;" onclick="generateReport()">Generate Report</button>
+            <button type="button" id="downloadBtn" style="display: none;" onclick="downloadReport()">Download</button>
+            <button type="button" id="downloadReportBtn" style="display: none;" onclick="downloadGeneratedReport()">Download Report</button>
+        </div>
+        </form>
+
+        <div id="reportResult" style="margin-top: 20px;">
+            <div id="reportMessage"></div>
+            <div id="reportDetails" style="display: none;">
+                <div id="reportTableContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'ccd_app/reports.js' %}"></script>
+</body>
+</html>

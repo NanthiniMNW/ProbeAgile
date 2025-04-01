@@ -1,0 +1,301 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6; /* Light, airy background */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Navbar Styles */
+.navbar {
+    width: 100%;
+    background-color: #444141; /* White navbar for a clean look */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.navbar a {
+    color: #f8f8f8f6; /* Dark gray for links */
+    text-decoration: none;
+    font-size: 14px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: color 0.3s, transform 0.2s;
+    border-radius: 4px;
+    margin: 0 10px;
+}
+
+.navbar a:hover {
+    color: #1abc9c; /* Vibrant green for hover */
+    transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.navbar a.active {
+    color: #1abc9c; /* Vibrant green for active state */
+    font-weight: bold;
+    border-bottom: 2px solid #1abc9c; /* Underline effect */
+}
+
+/* Container Styles */
+.container {
+    width: 100%;
+    height: calc(100vh - 70px);
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 70px;
+    overflow-y: auto;
+}
+
+h3 {
+    margin: 15px 0;
+    color: #01010a;/* Darker shade for headings */
+    font-size: 20px; /* Larger for emphasis */
+    font-weight: 600;
+    text-transform: uppercase; /* Uppercase headings */
+    letter-spacing: 1px;
+}
+
+/* Form Wrapper Styles */
+.form-wrapper {
+    width: 100%;
+    max-width: 600px; /* Limit width for better readability */
+    margin: 0 auto; /* Center the form */
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+input, select {
+    width: 50%;
+    padding: 12px;
+    font-size: 14px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #f9f9f9; /* Light background for inputs */
+}
+
+input:focus, select:focus {
+    border-color: #1abc9c; /* Vibrant green for focus */
+    box-shadow: 0 0 8px rgba(26, 188, 156, 0.3); /* Subtle glow effect */
+    outline: none;
+    background-color: #fff; /* White background on focus */
+}
+
+button {
+    padding: 12px 24px;
+    font-size: 14px;
+    background-color: #1abc9c; /* Vibrant green */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 10px;
+    width: 8%; /* Full-width button */
+}
+
+button:hover {
+    background-color: #16a085; /* Darker green on hover */
+    transform: translateY(-2px); /* Subtle lift effect */
+}
+
+button:active {
+    transform: translateY(0); /* Reset lift effect on click */
+}
+
+/* Content Section Styles */
+.content-section {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.active-section {
+    display: block;
+}
+
+#invalidReason {
+    display: none;
+}
+
+/* Message Styles */
+.message {
+    font-size: 12px;
+    color: #e74c3c; /* Red for error messages */
+    margin-top: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    h3 {
+        font-size: 18px;
+    }
+
+    input, select {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 12px;
+    }
+
+    .navbar a {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    .form-wrapper {
+        padding: 20px;
+    }
+}
+
+/* Additional Styles for Specific Elements */
+input[name="reasonforinvalidstatus"] {
+    visibility: visible;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hover Effects for Interactive Elements */
+.navbar a, button {
+    transition: all 0.3s ease;
+}
+
+/* Subtle Background Animation */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(26, 188, 156, 0.1), rgba(22, 160, 133, 0.1));
+    z-index: -1;
+    pointer-events: none;
+}
+#matchedKeywordDetails,#matchedurlTable,#matchedurlTableContainer {
+    width: 50%; /* Set the container width to 50% of its parent */
+     /* Center the container horizontally */
+}
+.form-group label {
+    color: #0f1312; /* Change to your desired color */
+    font-size: 14px; /* Optional: Adjust font size */
+    font-weight: bold; /* Optional: Make the label bold */
+}
+.label-style {
+    color: rgb(1, 1, 10); /* Change this to your desired color */
+    font-weight: bold; /* Optional: Add other styles like font weight */
+}
+.button-container {
+    display: flex; /* Align buttons horizontally */
+    gap: 10px; /* Space between the buttons */
+    justify-content: left; /* Optional: Centers the buttons */
+}
+
+.button-container button {
+    padding: 10px 20px; /* Add padding to buttons */
+    font-size: 16px; /* Adjust the font size */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+.required label::after {
+    content: " *"; /* Red asterisk for required fields */
+    color: #e74c3c; /* Matches your error message color */
+    font-weight: bold;
+}
+
+.form-group label {
+    display: block; /* Ensures labels are above inputs */
+    margin-bottom: 5px; /* Adds spacing */
+}
+/*radio button*/
+.radio-group {
+    margin: 0.5rem;
+    white-space: nowrap;
+    width: 0%; /* Changed to 100% to ensure enough space */
+}
+
+.radio-group .radio-inline {
+    display: inline-block;
+    margin-right: 2rem; /* Increased from 1rem to 2rem for a larger gap */
+    cursor: pointer;
+    font-weight: normal;
+}
+
+input[type="radio"] {
+    margin-right: 0.3rem;
+    vertical-align: middle;
+}
+/* ccd_app/static/ccd_app/styles.css */
+.messages {
+    margin: 10px 0;
+}
+
+.messages .success {
+    color: green;
+    font-weight: bold;
+}
+
+.messages .error {
+    color: red;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+#videoDuration {
+    display: block; /* Ensure it's visible */
+    visibility: visible; /* Ensure it's visible */
+    opacity: 1; /* Ensure it's fully opaque */
+}
+.checkbox-group {
+    margin: 0.5rem;
+    white-space: nowrap;
+    width: 0%; /* Set to 100% to ensure enough space, as you noted */
+}
+
+.checkbox-group .checkbox-inline {
+    display: inline-block;
+    margin-right: 3rem; /* Larger gap between options, as you specified */
+    cursor: pointer;
+    font-weight: normal;
+}
+
+input[type="checkbox"] {
+    margin-right: 0.3rem;
+    vertical-align: middle;
+}

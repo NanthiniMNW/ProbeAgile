@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CCD Application</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'ccd_app/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar"> 
+        {% if request.user.role == 'Supervisor' %}  
+        <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+        <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+        <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+        <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning </a>
+    {% elif request.user.role == 'Executive' %} 
+        {% for scope in request.user.get_allocated_scopes %}
+            {% if scope == 'Discovery' %}
+                <a href="{% url 'discovery' %}" data-section="discovery" onclick="switchSection(this)"><i class="fa fa-search"></i> Discovery</a>
+            {% elif scope == 'DomainReview' %}
+                <a href="{% url 'domain_review' %}" data-section="domain-review" onclick="switchSection(this)"><i class="fa fa-globe"></i> Domain Review</a>
+            {% elif scope == 'Download' %}
+                <a href="{% url 'download' %}" data-section="download" onclick="switchSection(this)"><i class="fa fa-download"></i> Download</a>
+            {% elif scope == 'Cleaning' %}
+                <a href="{% url 'cleaning' %}" data-section="cleaning" onclick="switchSection(this)"><i class="fa fa-trash"></i> Cleaning</a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+
+
+        
+        {% if request.user.role == 'Supervisor' %}
+            <a href="{% url 'reports' %}" data-section="reports" onclick="switchSection(this)"><i class="fa fa-bar-chart"></i> Reports </a> 
+            <a href="{% url 'usercreation' %}" data-section="usercreation" onclick="switchSection(this)"><i class="fa fa-user-circle"></i> User Creation </a>  
+        {% endif %}
+        <a href="{% url 'logout' %}" class="logout-link" data-section="logout" onclick="switchSection(this)">
+            <i class="fa fa-sign-out"></i> Logout
+        </a>
+    </div>
+
+    <!-- Download Section -->
+    <div id="download" class="container content-section" style="display: block;">
+        <form id="download-form" action="/domain-review-submit" method="POST" onsubmit="return handleDownloadSubmission(event)">
+            <div class="form-group required">
+                <label for="downloadURLInput" class="label-style"><i class="fa fa-downloadURL"></i> Download URL</label>
+                <div>
+                    <input type="text" id="downloadURLInput" name="downloadURL" placeholder="Download URL" required />
+                </div>
+            </div>
+            <div id="domainURLMessage"></div>
+            
+            <div id="matchedurlDetails" style="display: none;">
+                <div id="matchedurlTableContainer"></div> <!-- Correct ID for the table container -->
+            </div>
+            <button type="button" id="downloadfetchDetailsButton" onclick="downloadsearchurlKeyword()">Fetch Details</button>
+            <div class="form-group required">
+                <label for="downloadstatus" class="label-style"><i class="fa fa-DownloadStatus"></i> Download Status</label>
+                <div>
+                    <select id="downloadstatus" name="downloadstatus" required onchange="toggleDownloadFields()">
+                        <option value="" disabled selected>Select a Download Status</option>
+                        <option value="downloaded">Downloaded</option>
+                        <option value="not_downloaded">Not Downloaded</option>
+                    </select>
+                </div>
+            </div>
+            <div id="downloaded-field" style="display: none;" class="form-group required">
+                <label for="Sharepathlink" class="label-style"><i class="fa fa-downloaded"></i> Downloaded</label>
+                <div>
+                    <input type="text" id="Sharepathlink" name="Sharepathlink" placeholder="Enter the Sharepath Link" required />
+                </div>
+            </div>
+            <div id="not-downloaded-field" style="display: none;" class="form-group required">
+                <label for="NotDownloadedReason" class="label-style"><i class="fa fa-not-downloaded"></i> Not Downloaded</label>
+                <div>
+                    <input type="text" id="NotDownloadedReason" name="NotDownloadedReason" placeholder="Enter the reason" required />
+                </div>
+            </div>
+            <div class="button-container">
+                <button type="submit"><i class="fa fa-paper-plane"></i> Submit</button>
+                <button type="button" onclick="handleNextButtonClick()" id="nextButton"><i class="fa fa-arrow-right"></i> Next</button>
+            </div>
+            <div id="url-display"></div>
+        </form>
+    </div>
+    <script src="{% static 'ccd_app/download.js' %}"></script>
+</body>
+</html>
